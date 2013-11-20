@@ -6,6 +6,7 @@ var ngSelectionProvider = function (grid, $scope, $parse) {
     self.lastClickedRow = undefined;
     self.ignoreSelectedItemChanges = false; // flag to prevent circular event loops keeping single-select var in sync
     self.pKeyParser = $parse(grid.config.primaryKey);
+    self.activeItem = grid.config.activeItem;
 
     // function to manage the selection action of a data item (entity)
     self.ChangeSelection = function (rowItem, evt) {
@@ -28,7 +29,7 @@ var ngSelectionProvider = function (grid, $scope, $parse) {
 
                 var thisIndx = rowItem.rowIndex;
                 var prevIndx = self.lastClickedRowIndex;
-                
+
                 if (thisIndx === prevIndx) {
                     return false;
                 }
@@ -110,7 +111,7 @@ var ngSelectionProvider = function (grid, $scope, $parse) {
         return index;
     };
 
-    // just call this func and hand it the rowItem you want to select (or de-select)    
+    // just call this func and hand it the rowItem you want to select (or de-select)
     self.setSelection = function (rowItem, isSelected) {
         if(grid.config.enableRowSelection){
             if (!isSelected) {
@@ -160,5 +161,24 @@ var ngSelectionProvider = function (grid, $scope, $parse) {
                 grid.config.afterSelectionChange(rows, checkAll);
             }
         }
+    };
+
+    self.ActivateRow = function (rowItem, evt) {
+        if ( grid.config.enableActiveRowSelection ) {
+
+            // Deactivat already active row
+            if ( self.activeItem ) {
+                self.activeItem.active = false;
+            }
+
+            self.activeItem = rowItem;
+            self.activeItem.active = true;
+
+            grid.config.afterActiveRowChange(self.activeItem, true);
+        }
+    };
+
+    self.getActivation = function (entity) {
+        return self.activeItem == entity;
     };
 };

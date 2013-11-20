@@ -3,11 +3,19 @@
 /// <reference path="../../lib/jquery-1.8.2.min" />
 var ngGrid = function ($scope, options, sortService, domUtilityService, $filter, $templateCache, $utils, $timeout, $parse, $http, $q) {
     var defaults = {
+
+        //Active row see enableActiveRowSelection
+        activeItem: false,
+
         //Define an aggregate template to customize the rows when grouped. See github wiki for more details.
         aggregateTemplate: undefined,
 
         //Callback for when you want to validate something after selection.
         afterSelectionChange: function() {
+        },
+
+        //Callback for when you want to validate something after row activation see enableActiveRowSelection.
+        afterActiveRowChange: function() {
         },
 
         /* Callback if you want to inspect something before selection,
@@ -66,6 +74,10 @@ var ngGrid = function ($scope, options, sortService, domUtilityService, $filter,
 
         //Enables or disables text highlighting in grid by adding the "unselectable" class (See CSS file)
         enableHighlighting: false,
+
+        //Apart from normal select(enableRowSelection) we are allowing to have single row selected
+        //which will trigger afterActiveRowChange and update activeItem
+        enableActiveRowSelection: false,
 
         // string list of properties to exclude when auto-generating columns.
         excludeProperties: [],

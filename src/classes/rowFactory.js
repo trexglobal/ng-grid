@@ -13,6 +13,7 @@
     self.rowHeight = grid.config.rowHeight;
     self.rowConfig = {
         enableRowSelection: grid.config.enableRowSelection,
+        enableActiveRowSelection: grid.config.enableActiveRowSelection,
         rowClasses: grid.config.rowClasses,
         selectedItems: $scope.selectedItems,
         selectWithCheckboxOnly: grid.config.selectWithCheckboxOnly,
@@ -33,7 +34,7 @@
     };
 
     self.buildAggregateRow = function(aggEntity, rowIndex) {
-        var agg = self.aggCache[aggEntity.aggIndex]; // first check to see if we've already built it 
+        var agg = self.aggCache[aggEntity.aggIndex]; // first check to see if we've already built it
         if (!agg) {
             // build the row
             agg = new ngAggregate(aggEntity, self, self.rowConfig.rowHeight, grid.config.groupsCollapsedByDefault);
@@ -228,12 +229,12 @@
                             resizable: false,
                             headerCellTemplate: '<div class="ngAggHeader"></div>',
                             pinned: grid.config.pinSelectionCheckbox
-                            
+
                         },
                         enablePinning: grid.config.enablePinning,
                         isAggCol: true,
                         headerRowHeight: grid.config.headerRowHeight
-                        
+
                     }, $scope, grid, domUtilityService, $templateCache, $utils));
                 }
             }

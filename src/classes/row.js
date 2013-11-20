@@ -5,6 +5,7 @@ var ngRow = function (entity, config, selectionProvider, rowIndex, $utils) {
 	this.rowIndex = rowIndex;
 	this.utils = $utils;
 	this.selected = selectionProvider.getSelection(entity);
+	this.active = selectionProvider.getActivation(entity);
 	this.cursor = this.config.enableRowSelection && !this.config.selectWithCheckboxOnly ? 'pointer' : 'default';
 	this.beforeSelectionChange = config.beforeSelectionChangeCallback;
 	this.afterSelectionChange = config.afterSelectionChangeCallback;
@@ -19,26 +20,36 @@ ngRow.prototype.setSelection = function (isSelected) {
 ngRow.prototype.continueSelection = function (event) {
 	this.selectionProvider.ChangeSelection(this, event);
 };
+ngRow.prototype.continueActivation = function (event) {
+	this.selectionProvider.ActivateRow(this, event);
+};
 ngRow.prototype.ensureEntity = function (expected) {
 	if (this.entity !== expected) {
 		// Update the entity and determine our selected property
 		this.entity = expected;
 		this.selected = this.selectionProvider.getSelection(this.entity);
+		this.active = this.selectionProvider.getActivation(this.entity);
 	}
 };
 ngRow.prototype.toggleSelected = function (event) {
+
+	if ( this.config.enableActiveRowSelection ) {
+		this.continueActivation(event);
+		return true;
+	}
+
 	if (!this.config.enableRowSelection && !this.config.enableCellSelection) {
 		return true;
 	}
 	var element = event.target || event;
-	//check and make sure its not the bubbling up of our checked 'click' event 
+	//check and make sure its not the bubbling up of our checked 'click' event
 	if (element.type === "checkbox" && element.parentElement.className !== "ngSelectionCell ng-scope") {
 		return true;
 	}
 	if (this.config.selectWithCheckboxOnly && element.type !== "checkbox") {
 		this.selectionProvider.lastClickedRow = this;
 		return true;
-	} 
+	}
 	if (this.beforeSelectionChange(this, event)) {
 		this.continueSelection(event);
 	}
@@ -49,6 +60,7 @@ ngRow.prototype.alternatingRowClass = function () {
 	var classes = {
 		'ngRow' : true,
 		'selected': this.selected,
+		'active': this.active,
 		'even': isEven,
 		'odd': !isEven,
 		'ui-state-default': this.config.jqueryUITheme && isEven,
@@ -70,5 +82,6 @@ ngRow.prototype.setVars = function (fromRow) {
 	fromRow.clone = this;
 	this.entity = fromRow.entity;
 	this.selected = fromRow.selected;
-    this.orig = fromRow;
+	this.active = fromRow.active;
+  this.orig = fromRow;
 };
