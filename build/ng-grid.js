@@ -2,7 +2,7 @@
 * ng-grid JavaScript Library
 * Authors: https://github.com/angular-ui/ng-grid/blob/master/README.md 
 * License: MIT (http://www.opensource.org/licenses/mit-license.php)
-* Compiled At: 11/20/2013 09:56
+* Compiled At: 11/20/2013 12:42
 ***********************************************/
 (function(window, $) {
 'use strict';
@@ -1137,6 +1137,7 @@ var ngGrid = function ($scope, options, sortService, domUtilityService, $filter,
         },
         autoSelectOnSingleRow: false,
         autoActivateOnSingleRow: false,
+        autoActivateFirstRow: false,
         beforeSelectionChange: function() {
             return true;
         },
@@ -1882,8 +1883,8 @@ var ngRow = function (entity, config, selectionProvider, rowIndex, $utils) {
 	this.rowIndex = rowIndex;
 	this.utils = $utils;
 	this.selected = selectionProvider.getSelection(entity);
-	this.active = selectionProvider.getActivation(entity);
-	this.cursor = this.config.enableRowSelection && !this.config.selectWithCheckboxOnly ? 'pointer' : 'default';
+	this.active = (selectionProvider.getActivation(entity) && selectionProvider.ActivateRow(this));
+	this.cursor = (this.config.enableRowSelection && !this.config.selectWithCheckboxOnly ) || this.config.enableActiveRowSelection ? 'pointer' : 'default';
 	this.beforeSelectionChange = config.beforeSelectionChangeCallback;
 	this.afterSelectionChange = config.afterSelectionChangeCallback;
 	this.offsetTop = this.rowIndex * config.rowHeight;
@@ -2550,7 +2551,7 @@ var ngSelectionProvider = function (grid, $scope, $parse) {
         }
     };
 
-    self.ActivateRow = function (rowItem, evt) {
+    self.ActivateRow = function (rowItem) {
         if ( grid.config.enableActiveRowSelection ) {
             if ( self.activeItem ) {
                 self.activeItem.active = false;
@@ -2559,15 +2560,22 @@ var ngSelectionProvider = function (grid, $scope, $parse) {
             self.activeItem = rowItem;
             self.activeItem.active = true;
 
-            grid.config.afterActiveRowChange(self.activeItem, true);
+            grid.config.afterActiveRowChange(self.activeItem);
         }
+        return true;
     };
 
     self.getActivation = function (entity) {
+        var active_state = false;
         if ( grid.config.autoActivateOnSingleRow && grid.data.length === 1 ) {
-            return true;
+            active_state = true;
+        } else if ( grid.config.autoActivateFirstRow && !self.activeItem ) {
+            active_state = true;
+        } else {
+            active_state = self.activeItem === entity;
         }
-        return self.activeItem === entity;
+
+        return active_state;
     };
 };
 

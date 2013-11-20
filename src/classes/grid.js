@@ -24,6 +24,9 @@ var ngGrid = function ($scope, options, sortService, domUtilityService, $filter,
         //Activate row when there is only one row
         autoActivateOnSingleRow: false,
 
+        //Activate row when there is only one row
+        autoActivateFirstRow: false,
+
         /* Callback if you want to inspect something before selection,
         return false if you want to cancel the selection. return true otherwise.
         If you need to wait for an async call to proceed with selection you can
