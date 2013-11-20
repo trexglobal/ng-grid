@@ -2,7 +2,7 @@
 * ng-grid JavaScript Library
 * Authors: https://github.com/angular-ui/ng-grid/blob/master/README.md 
 * License: MIT (http://www.opensource.org/licenses/mit-license.php)
-* Compiled At: 11/20/2013 07:25
+* Compiled At: 11/20/2013 08:49
 ***********************************************/
 (function(window, $) {
 'use strict';
@@ -1216,7 +1216,7 @@ var ngGrid = function ($scope, options, sortService, domUtilityService, $filter,
     var defaults = {
 
         //Active row see enableActiveRowSelection
-        activeRow: false,
+        activeItem: false,
 
         //Define an aggregate template to customize the rows when grouped. See github wiki for more details.
         aggregateTemplate: undefined,
@@ -2176,6 +2176,7 @@ ngRow.prototype.ensureEntity = function (expected) {
 		// Update the entity and determine our selected property
 		this.entity = expected;
 		this.selected = this.selectionProvider.getSelection(this.entity);
+		this.active = this.selectionProvider.getActivation(this.entity);
 	}
 };
 ngRow.prototype.toggleSelected = function (event) {
@@ -2698,8 +2699,6 @@ var ngSelectionProvider = function (grid, $scope, $parse) {
     self.pKeyParser = $parse(grid.config.primaryKey);
     self.activeItem = grid.config.activeItem;
 
-    // console.log(self.pKeyParser)
-
     // function to manage the selection action of a data item (entity)
     self.ChangeSelection = function (rowItem, evt) {
         // ctrl-click + shift-click multi-selections
@@ -2857,15 +2856,20 @@ var ngSelectionProvider = function (grid, $scope, $parse) {
 
     self.ActivateRow = function (rowItem, evt) {
         if ( grid.config.enableActiveRowSelection ) {
-            console.log('hey!', rowItem, evt)
-            self.activeItem = rowItem;
 
-            rowItem.active = true;
+            // Deactivat already active row
+            if ( self.activeItem ) {
+                self.activeItem.active = false;
+            }
+
+            self.activeItem = rowItem;
+            self.activeItem.active = true;
+
+            grid.config.afterActiveRowChange(self.activeItem, true);
         }
     };
 
     self.getActivation = function (entity) {
-        console.log(entity, self.pKeyParser(entity))
         return self.activeItem == entity;
     };
 };
@@ -3401,21 +3405,6 @@ ngGridDirectives.directive('ngViewport', [function() {
         }
     };
 }]);
-window.ngGrid.i18n['cs'] = {
-    ngAggregateLabel: 'items',
-    ngGroupPanelDescription: 'Drag a column header here and drop it to group by that column.',
-    ngSearchPlaceHolder: 'Search...',
-    ngMenuText: 'Choose Columns:',
-    ngShowingItemsLabel: 'Showing Items:',
-    ngTotalItemsLabel: 'Total Items:',
-    ngSelectedItemsLabel: 'Selected Items:',
-    ngPageSizeLabel: 'Page Size:',
-    ngPagerFirstTitle: 'First Page',
-    ngPagerNextTitle: 'Next Page',
-    ngPagerPrevTitle: 'Previous Page',
-    ngPagerLastTitle: 'Last Page'
-};
-
 window.ngGrid.i18n['da'] = {
     ngAggregateLabel: 'artikler',
     ngGroupPanelDescription: 'Grupér rækker udfra en kolonne ved at trække dens overskift hertil.',
