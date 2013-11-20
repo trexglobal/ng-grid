@@ -179,6 +179,6 @@ var ngSelectionProvider = function (grid, $scope, $parse) {
     };
 
     self.getActivation = function (entity) {
-        return self.activeItem == entity;
+        return self.activeItem === entity;
     };
 };

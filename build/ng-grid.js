@@ -2,7 +2,7 @@
 * ng-grid JavaScript Library
 * Authors: https://github.com/angular-ui/ng-grid/blob/master/README.md 
 * License: MIT (http://www.opensource.org/licenses/mit-license.php)
-* Compiled At: 11/20/2013 08:49
+* Compiled At: 11/20/2013 08:50
 ***********************************************/
 (function(window, $) {
 'use strict';
@@ -2559,7 +2559,7 @@ var ngSelectionProvider = function (grid, $scope, $parse) {
     };
 
     self.getActivation = function (entity) {
-        return self.activeItem == entity;
+        return self.activeItem === entity;
     };
 };
 
