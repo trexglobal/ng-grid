@@ -2,7 +2,7 @@
 * ng-grid JavaScript Library
 * Authors: https://github.com/angular-ui/ng-grid/blob/master/README.md 
 * License: MIT (http://www.opensource.org/licenses/mit-license.php)
-* Compiled At: 11/20/2013 08:50
+* Compiled At: 11/20/2013 09:56
 ***********************************************/
 (function(window, $) {
 'use strict';
@@ -1229,6 +1229,12 @@ var ngGrid = function ($scope, options, sortService, domUtilityService, $filter,
         afterActiveRowChange: function() {
         },
 
+        //Select row when there is only one row
+        autoSelectOnSingleRow: false,
+
+        //Activate row when there is only one row
+        autoActivateOnSingleRow: false,
+
         /* Callback if you want to inspect something before selection,
         return false if you want to cancel the selection. return true otherwise.
         If you need to wait for an async call to proceed with selection you can
@@ -1252,6 +1258,10 @@ var ngGrid = function ($scope, options, sortService, domUtilityService, $filter,
         //Data updated callback, fires every time the data is modified from outside the grid.
         dataUpdated: function() {
         },
+
+        //Apart from normal select(enableRowSelection) we are allowing to have single row selected
+        //which will trigger afterActiveRowChange and update activeItem
+        enableActiveRowSelection: false,
 
         //Enables cell editing.
         enableCellEdit: false,
@@ -1285,10 +1295,6 @@ var ngGrid = function ($scope, options, sortService, domUtilityService, $filter,
 
         //Enables or disables text highlighting in grid by adding the "unselectable" class (See CSS file)
         enableHighlighting: false,
-
-        //Apart from normal select(enableRowSelection) we are allowing to have single row selected
-        //which will trigger afterActiveRowChange and update activeItem
-        enableActiveRowSelection: false,
 
         // string list of properties to exclude when auto-generating columns.
         excludeProperties: [],
@@ -2783,6 +2789,9 @@ var ngSelectionProvider = function (grid, $scope, $parse) {
     };
 
     self.getSelection = function (entity) {
+        if ( grid.config.autoSelectOnSingleRow && grid.data.length === 1 ) {
+            return true;
+        }
         return self.getSelectionIndex(entity) !== -1;
     };
 
@@ -2857,7 +2866,7 @@ var ngSelectionProvider = function (grid, $scope, $parse) {
     self.ActivateRow = function (rowItem, evt) {
         if ( grid.config.enableActiveRowSelection ) {
 
-            // Deactivat already active row
+            // Deactivate already active row
             if ( self.activeItem ) {
                 self.activeItem.active = false;
             }
@@ -2870,6 +2879,9 @@ var ngSelectionProvider = function (grid, $scope, $parse) {
     };
 
     self.getActivation = function (entity) {
+        if ( grid.config.autoActivateOnSingleRow && grid.data.length === 1 ) {
+            return true;
+        }
         return self.activeItem === entity;
     };
 };

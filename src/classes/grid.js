@@ -18,6 +18,12 @@ var ngGrid = function ($scope, options, sortService, domUtilityService, $filter,
         afterActiveRowChange: function() {
         },
 
+        //Select row when there is only one row
+        autoSelectOnSingleRow: false,
+
+        //Activate row when there is only one row
+        autoActivateOnSingleRow: false,
+
         /* Callback if you want to inspect something before selection,
         return false if you want to cancel the selection. return true otherwise.
         If you need to wait for an async call to proceed with selection you can
@@ -41,6 +47,10 @@ var ngGrid = function ($scope, options, sortService, domUtilityService, $filter,
         //Data updated callback, fires every time the data is modified from outside the grid.
         dataUpdated: function() {
         },
+
+        //Apart from normal select(enableRowSelection) we are allowing to have single row selected
+        //which will trigger afterActiveRowChange and update activeItem
+        enableActiveRowSelection: false,
 
         //Enables cell editing.
         enableCellEdit: false,
@@ -74,10 +84,6 @@ var ngGrid = function ($scope, options, sortService, domUtilityService, $filter,
 
         //Enables or disables text highlighting in grid by adding the "unselectable" class (See CSS file)
         enableHighlighting: false,
-
-        //Apart from normal select(enableRowSelection) we are allowing to have single row selected
-        //which will trigger afterActiveRowChange and update activeItem
-        enableActiveRowSelection: false,
 
         // string list of properties to exclude when auto-generating columns.
         excludeProperties: [],

@@ -92,6 +92,9 @@ var ngSelectionProvider = function (grid, $scope, $parse) {
     };
 
     self.getSelection = function (entity) {
+        if ( grid.config.autoSelectOnSingleRow && grid.data.length === 1 ) {
+            return true;
+        }
         return self.getSelectionIndex(entity) !== -1;
     };
 
@@ -166,7 +169,7 @@ var ngSelectionProvider = function (grid, $scope, $parse) {
     self.ActivateRow = function (rowItem, evt) {
         if ( grid.config.enableActiveRowSelection ) {
 
-            // Deactivat already active row
+            // Deactivate already active row
             if ( self.activeItem ) {
                 self.activeItem.active = false;
             }
@@ -179,6 +182,9 @@ var ngSelectionProvider = function (grid, $scope, $parse) {
     };
 
     self.getActivation = function (entity) {
+        if ( grid.config.autoActivateOnSingleRow && grid.data.length === 1 ) {
+            return true;
+        }
         return self.activeItem === entity;
     };
 };

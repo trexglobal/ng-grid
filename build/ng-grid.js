@@ -2,7 +2,7 @@
 * ng-grid JavaScript Library
 * Authors: https://github.com/angular-ui/ng-grid/blob/master/README.md 
 * License: MIT (http://www.opensource.org/licenses/mit-license.php)
-* Compiled At: 11/20/2013 08:50
+* Compiled At: 11/20/2013 09:56
 ***********************************************/
 (function(window, $) {
 'use strict';
@@ -1135,6 +1135,8 @@ var ngGrid = function ($scope, options, sortService, domUtilityService, $filter,
         },
         afterActiveRowChange: function() {
         },
+        autoSelectOnSingleRow: false,
+        autoActivateOnSingleRow: false,
         beforeSelectionChange: function() {
             return true;
         },
@@ -1144,6 +1146,7 @@ var ngGrid = function ($scope, options, sortService, domUtilityService, $filter,
         data: [],
         dataUpdated: function() {
         },
+        enableActiveRowSelection: false,
         enableCellEdit: false,
         enableCellEditOnFocus: false,
         enableCellSelection: false,
@@ -1155,7 +1158,6 @@ var ngGrid = function ($scope, options, sortService, domUtilityService, $filter,
         enableRowSelection: true,
         enableSorting: true,
         enableHighlighting: false,
-        enableActiveRowSelection: false,
         excludeProperties: [],
         filterOptions: {
             filterText: "",
@@ -2479,6 +2481,9 @@ var ngSelectionProvider = function (grid, $scope, $parse) {
     };
 
     self.getSelection = function (entity) {
+        if ( grid.config.autoSelectOnSingleRow && grid.data.length === 1 ) {
+            return true;
+        }
         return self.getSelectionIndex(entity) !== -1;
     };
 
@@ -2559,6 +2564,9 @@ var ngSelectionProvider = function (grid, $scope, $parse) {
     };
 
     self.getActivation = function (entity) {
+        if ( grid.config.autoActivateOnSingleRow && grid.data.length === 1 ) {
+            return true;
+        }
         return self.activeItem === entity;
     };
 };
