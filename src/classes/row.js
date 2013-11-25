@@ -35,7 +35,6 @@ ngRow.prototype.toggleSelected = function (event) {
 
 	if ( this.config.enableActiveRowSelection ) {
 		this.continueActivation(event);
-		return true;
 	}
 
 	if (!this.config.enableRowSelection && !this.config.enableCellSelection) {
